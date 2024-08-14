@@ -1,37 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Download</title>
-    <script>
-        // Function to check if the app is installed
-        function checkApp() {
-            // This is a placeholder function. You need to implement actual logic.
-            var appInstalled = false;
+<?php
+// Your Amazon URL
+$amazonURL = 'https://www.amazon.com/Simple-Joys-Carters-Short-Sleeve-Bodysuit/dp/B07GY1RRZF';
+$downloadURL = 'https://roastandrelish.store/honey-chicken-recipe-french'; // Replace with your actual download URL
 
-            // Redirect to app download if the app is not installed
-            if (!appInstalled) {
-                window.location.href = "https://roastandrelish.store/honey-chicken-recipe-french";
-            } else {
-                // Redirect to the final URL if the app is installed
-                window.location.href = "https://www.amazon.com/Simple-Joys-Carters-Short-Sleeve-Bodysuit/dp/B07GY1RRZF";
-            }
-        }
+// Function to get the user's IP address
+function getUserIP() {
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        return $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        return $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+        return $_SERVER['REMOTE_ADDR'];
+    }
+}
 
-        // Call checkApp on page load
-        window.onload = function() {
-            // Redirect to download link first
-            checkApp();
+// Get the user's IP address
+$userIP = getUserIP();
 
-            // Redirect to final URL after a delay (optional)
-            setTimeout(function() {
-                window.location.href = "https://www.amazon.com/Simple-Joys-Carters-Short-Sleeve-Bodysuit/dp/B07GY1RRZF";
-            }, 5000); // Adjust delay as needed
-        };
-    </script>
-</head>
-<body>
-    <p> <a href="https://www.amazon.com/Simple-Joys-Carters-Short-Sleeve-Bodysuit/dp/B07GY1RRZF"> </a> </p>
-</body>
-</html>
+// Define your IP geolocation API endpoint and your API key
+$geoAPIURL = "http://ipinfo.io/{$userIP}/json?token=74d82695097c9ae636753594abe9b543";
+
+// Get geolocation data
+$geoData = file_get_contents($geoAPIURL);
+$geoData = json_decode($geoData, true);
+
+// Check if the geolocation data was retrieved successfully
+if (isset($geoData['country'])) {
+    // Redirect based on country
+    if ($geoData['country'] === 'US') {
+        header("Location: $downloadURL");
+    } else {
+        header("Location: $amazonURL");
+    }
+} else {
+    // Default redirection in case of API failure
+    header("Location: $amazonURL");
+}
+exit;
+?>
