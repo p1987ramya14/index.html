@@ -1,40 +1,27 @@
-<?php
-// Your Amazon URL
-$amazonURL = 'https://www.amazon.com/Simple-Joys-Carters-Short-Sleeve-Bodysuit/dp/B07GY1RRZF';
-$downloadURL = 'https://roastandrelish.store/honey-chicken-recipe-french'; // Replace with your actual download URL
-
-// Function to get the user's IP address
-function getUserIP() {
-    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-        return $_SERVER['HTTP_CLIENT_IP'];
-    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        return $_SERVER['HTTP_X_FORWARDED_FOR'];
-    } else {
-        return $_SERVER['REMOTE_ADDR'];
-    }
-}
-
-// Get the user's IP address
-$userIP = getUserIP();
-
-// Define your IP geolocation API endpoint and your API key
-$geoAPIURL = "http://ipinfo.io/{$userIP}/json?token=74d82695097c9ae636753594abe9b543";
-
-// Get geolocation data
-$geoData = file_get_contents($geoAPIURL);
-$geoData = json_decode($geoData, true);
-
-// Check if the geolocation data was retrieved successfully
-if (isset($geoData['country'])) {
-    // Redirect based on country
-    if ($geoData['country'] === 'US') {
-        header("Location: $downloadURL");
-    } else {
-        header("Location: $amazonURL");
-    }
-} else {
-    // Default redirection in case of API failure
-    header("Location: $amazonURL");
-}
-exit;
-?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Landing Page</title>
+    <script>
+        function checkDevice() {
+            if (/Mobi|Android/i.test(navigator.userAgent)) {
+                // Show options for mobile users
+                document.getElementById('mobile-options').style.display = 'block';
+            } else {
+                // Redirect desktop users to the web app
+                window.location.href = "https://www.jainnutsdryfruits.com/product";
+            }
+        }
+        window.onload = checkDevice;
+    </script>
+</head>
+<body>
+    <div id="mobile-options" style="display:none;">
+        <h2>Welcome to Our App</h2>
+        <button onclick="window.location.href='https://yourwebapp.com'">Visit Web App</button>
+        <button onclick="window.location.href='https://play.google.com/store/apps/details?id=com.yourapp'">Download App</button>
+    </div>
+</body>
+</html>
